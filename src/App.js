@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import LayoutHomeMain from "./routes/LayoutHomeMain";
 import React from "react";
@@ -22,26 +21,40 @@ function App() {
     <>
       <Router>
         <Loader />
-        <LayoutHeader />
 
         <Switch>
-          <Route exact path="/">
-            <LayoutHomeMain />
+          <Route path={["/login", "/SignUp"]}>
+            <Switch>
+              <Route path="/login">
+                <Loginpage />
+              </Route>
+              <Route path="/SignUp">
+                <SignUpPage />
+              </Route>
+            </Switch>
           </Route>
-          <Route path="/Job">
-            <Listjob />
-          </Route>
-          <Route path="/jobdetail">
-            <Jobdetail />
-          </Route>
-          <Route path="/login">
-            <Loginpage />
-          </Route>
-          <Route path="/SignUp">
-            <SignUpPage />
+
+          <Route>
+            <LayoutHeader />
+
+            <Switch>
+              <Route exact path="/">
+                <LayoutHomeMain />
+              </Route>
+              <Route path="/Job">
+                <Listjob />
+              </Route>
+              <Route path="/jobdetail">
+                <Jobdetail />
+              </Route>
+              <Route path="*">
+                <LayoutHomeMain />
+              </Route>
+            </Switch>
+
+            <Footer />
           </Route>
         </Switch>
-        <Footer />
       </Router>
     </>
   );
