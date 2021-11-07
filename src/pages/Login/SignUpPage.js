@@ -12,52 +12,64 @@ function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [validationMsg, setValidationMsg] = useState("");
-  const onChangeFullName = (event) => {
-    const value = event.target.value;
-    setFullName(value);
-  };
-  const onChangePhoneNumber = (event) => {
-    const value = event.target.value;
-    setPhoneNumber(value);
-  };
-  const onChangeEmail = (event) => {
-    const value = event.target.value;
-    setEmail(value);
-  };
-  const onChangePassword = (event) => {
-    const value = event.target.value;
-    setPassword(value);
-  };
-  const onChangeconfirmPassword = (event) => {
-    const value = event.target.value;
-    setConfirmPassword(value);
-  };
-  const validateAll = () => {
-    const msg = [];
-    if (isEmpty(fullName)) {
-      msg.fullName = "please input your full name !";
-    } else if (!isAlpha(fullName)) {
-      msg.fullName = "full name contains only letters (a-zA-Z).";
-    }
-    if (isEmpty(phoneNumber)) {
-      msg.phoneNumber = "please input your phone number !";
-    } else if (!isMobilePhone(phoneNumber, "vi-VN")) {
-      msg.phoneNumber = "your phone number is incorrect !";
-    }
-    if (isEmpty(email)) {
-      msg.email = "please input your email  !";
-    } else if (!isEmail(email)) {
-      msg.email = " your email is incorrect !";
-    }
-    setValidationMsg(msg);
-    if (Object.keys(msg).length > 0) return false;
-    return true;
-  };
-  const onSubmitLogin = (event) => {
-    console.log(useState.firstName);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // console.info(e.target);
+
+    setFullName(e.target.fullName.value);
+    setPhoneNumber(e.target.phoneNumber.value);
+    setEmail(e.target.email.value);
+    setPassword(e.target.password.value);
+    // setConfirmPassword(e.target.confirmPassword.value);
+
+    const validateAll = () => {
+      const msg = [];
+      if (isEmpty(fullName)) {
+        msg.fullName = "please input your full name !";
+      } else if (!isAlpha(fullName)) {
+        msg.fullName = "full name contains only letters (a-zA-Z).";
+      }
+      if (isEmpty(phoneNumber)) {
+        msg.phoneNumber = "please input your phone number !";
+      } else if (!isMobilePhone(phoneNumber, "vi-VN")) {
+        msg.phoneNumber = "your phone number is incorrect !";
+      }
+      if (isEmpty(email)) {
+        msg.email = "please input your email  !";
+      } else if (!isEmail(email)) {
+        msg.email = " your email is incorrect !";
+      }
+      setValidationMsg(msg);
+      if (Object.keys(msg).length > 0) return false;
+      return true;
+    };
+
     const isValid = validateAll();
     if (!isValid) return;
+    console.log(process.env.REACT_APP_API_URL);
+    fetch(`${process.env.REACT_APP_API_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        full_name: fullName,
+        phone_number: phoneNumber,
+        email: email,
+        password: password,
+        gender: "f",
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === true) {
+        }
+      })
+      .catch((err) => console.log(err));
   };
+
   return (
     <>
       <div>
@@ -70,7 +82,6 @@ function SignUpPage() {
           </a>
         </div>
         <section
-          className="vh-100"
           style={{
             background:
               'url("https://via.placeholder.com/2000X1333//88929f/5a6270C/O https://placeholder.com/") center center',
@@ -85,7 +96,7 @@ function SignUpPage() {
                       <div className="text-center">
                         <h4 className="mb-4">Signup</h4>
                       </div>
-                      <form className="login-form">
+                      <form className="login-form" onSubmit={handleSubmit}>
                         <div className="row">
                           <div className="col-md-6">
                             <div className="form-group position-relative">
@@ -97,9 +108,7 @@ function SignUpPage() {
                                 className="form-control"
                                 placeholder="your fullname ?"
                                 name="fullName"
-                                autoComplete="fullName"
-                                id="fullName"
-                                onChange={onChangeFullName}
+                                required
                               />
                               <i
                                 style={{ color: "red", fontSize: "10px" }}
@@ -112,7 +121,7 @@ function SignUpPage() {
                           <div className="col-md-6">
                             <div className="form-group position-relative">
                               <label>
-                                Phone number{" "}
+                                Phone number
                                 <span className="text-danger">*</span>
                               </label>
                               <input
@@ -120,9 +129,6 @@ function SignUpPage() {
                                 className="form-control"
                                 placeholder="your phone number"
                                 name="phoneNumber"
-                                autoComplete="phoneNumber"
-                                id="phoneNumber"
-                                onChange={onChangePhoneNumber}
                                 required
                               />
                               <i
@@ -136,7 +142,7 @@ function SignUpPage() {
                           <div className="col-md-12">
                             <div className="form-group position-relative">
                               <label>
-                                Your Email{" "}
+                                Your Email
                                 <span className="text-danger">*</span>
                               </label>
                               <input
@@ -144,9 +150,6 @@ function SignUpPage() {
                                 className="form-control"
                                 placeholder="Email"
                                 name="email"
-                                autoComplete="email"
-                                id="email"
-                                onChange={onChangeEmail}
                                 required
                               />
                               <i
@@ -159,9 +162,7 @@ function SignUpPage() {
                           </div>
                           <div className="col-md-12">
                             <div className="form-group position-relative">
-                              <label>
-                                Gender <span className="text-danger">*</span>
-                              </label>
+                              <label>Gender</label>
                               <div
                                 style={
                                   ({ display: "flex" },
@@ -171,28 +172,25 @@ function SignUpPage() {
                                 <span style={{ fontSize: "13px" }}>Male</span>
                                 <input
                                   style={{ margin: "10px" }}
-                                  id="gender"
                                   value="m"
-                                  name="male"
+                                  name="gender"
                                   type="radio"
                                 />
                                 <span style={{ fontSize: "13px" }}>Female</span>
                                 <input
                                   style={{ margin: "10px" }}
-                                  id="gender"
                                   value="f"
-                                  name="female"
+                                  name="gender"
                                   type="radio"
                                 />
                                 <span style={{ fontSize: "13px" }}>Other</span>
                                 <input
                                   style={{ margin: "10px" }}
-                                  id="gender"
                                   value="o"
-                                  name="other"
+                                  name="gender"
                                   type="radio"
+                                  defaultChecked
                                 />
-                                <i>sá</i>
                               </div>
                             </div>
                           </div>
@@ -205,6 +203,7 @@ function SignUpPage() {
                                 type="password"
                                 className="form-control"
                                 placeholder="Password"
+                                name="password"
                                 required
                               />
                             </div>
@@ -247,7 +246,6 @@ function SignUpPage() {
                           <div className="col-md-12">
                             <button
                               type="submit"
-                              onClick={onSubmitLogin}
                               className="btn btn-primary w-100"
                             >
                               Register
@@ -295,7 +293,7 @@ function SignUpPage() {
                             <p className="mb-0 mt-3">
                               <small className="text-dark mr-2">
                                 Already have an account ?
-                              </small>{" "}
+                              </small>
                               <Link
                                 to="/login"
                                 className="text-dark font-weight-bold"

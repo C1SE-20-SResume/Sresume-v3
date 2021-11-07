@@ -3,20 +3,15 @@ import { Link } from "react-router-dom";
 import isEmpty from "validator/lib/isEmpty";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
+import { useCookies } from "react-cookie";
 
 function Loginpage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validationMsg, setValidationMsg] = useState("");
 
-  const onChangeEmail = (event) => {
-    const value = event.target.value;
-    setEmail(value);
-  };
-  const onChangePassword = (event) => {
-    const value = event.target.value;
-    setPassword(value);
-  };
+  const [cookies, setCookie] = useCookies(["user"]);
+
   const validateAll = () => {
     const msg = {};
     if (isEmpty(email)) {
@@ -25,9 +20,9 @@ function Loginpage() {
       msg.email = " your email is incorrect !";
     }
     if (isEmpty(password)) {
-      msg.password = "plase input your password ";
+      msg.password = "please input your password ";
     } else if (!isStrongPassword(password)) {
-      msg.password = " your password is incorrect !";
+      msg.password = "Your password is incorrect !";
     }
     setValidationMsg(msg);
     if (Object.keys(msg).length > 0) return false;
@@ -37,6 +32,26 @@ function Loginpage() {
     event.preventDefault();
     const isValid = validateAll();
     if (!isValid) return;
+    fetch(`${process.env.REACT_APP_API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === true) {
+          setCookie("user", data.api_token);
+          window.location.reload();
+        } else {
+          setValidationMsg(data.message);
+        }
+      })
+      .catch((err) => console.log(err));
   };
   return (
     <>
@@ -80,7 +95,9 @@ function Loginpage() {
                                 name="email"
                                 autoComplete="email"
                                 id="email"
-                                onChange={onChangeEmail}
+                                onChange={(event) =>
+                                  setEmail(event.target.value)
+                                }
                               />
 
                               <i
@@ -102,7 +119,9 @@ function Loginpage() {
                                 className="form-control"
                                 placeholder="Password"
                                 autoComplete="current-password"
-                                onChange={onChangePassword}
+                                onChange={(event) =>
+                                  setPassword(event.target.value)
+                                }
                               />
                               <i
                                 style={{ color: "red", fontSize: "10px" }}

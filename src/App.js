@@ -16,23 +16,28 @@ import Loader from "./pages/home/Loader";
 import SignUpPage from "./pages/Login/SignUpPage";
 import Jobdetail from "./pages/Job/Jobdetail";
 
+import { useCookies } from "react-cookie";
+
 function App() {
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   return (
     <>
       <Router>
         <Loader />
 
         <Switch>
-          <Route path={["/login", "/SignUp"]}>
-            <Switch>
-              <Route path="/login">
-                <Loginpage />
-              </Route>
-              <Route path="/SignUp">
-                <SignUpPage />
-              </Route>
-            </Switch>
-          </Route>
+          {cookies.user ?? (
+            <Route path={["/login", "/SignUp"]}>
+              <Switch>
+                <Route path="/login">
+                  <Loginpage />
+                </Route>
+                <Route path="/SignUp">
+                  <SignUpPage />
+                </Route>
+              </Switch>
+            </Route>
+          )}
 
           <Route>
             <LayoutHeader />

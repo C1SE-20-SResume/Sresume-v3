@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function ListJobHome() {
@@ -10,11 +10,10 @@ function ListJobHome() {
 
   useEffect(() => {
     fetch(
-      `https://web-server.test/api/candidate/job?api_token=g5eOc2fgnYGpRzszc1xC8CQmq2CaFDB5SZBtuuYCtzYvB6MaTSxifRiZ4f7Z`
+      `${process.env.REACT_APP_API_URL}/candidate/job?api_token=${cookies.user}`
     )
       .then((res) => res.json())
       .then((data) => setListUser(data.data))
-
       .catch((err) => console.log(err));
   }, []);
   return (
