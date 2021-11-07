@@ -1,7 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import isEmpty from "validator/lib/isEmpty";
+import isEmail from "validator/lib/isEmail";
+import isStrongPassword from "validator/lib/isStrongPassword";
 
 function Loginpage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [validationMsg, setValidationMsg] = useState("");
+
+  const onChangeEmail = (event) => {
+    const value = event.target.value;
+    setEmail(value);
+  };
+  const onChangePassword = (event) => {
+    const value = event.target.value;
+    setPassword(value);
+  };
+  const validateAll = () => {
+    const msg = {};
+    if (isEmpty(email)) {
+      msg.email = "please input your email !";
+    } else if (!isEmail(email)) {
+      msg.email = " your email is incorrect !";
+    }
+    if (isEmpty(password)) {
+      msg.password = "plase input your password ";
+    } else if (!isStrongPassword(password)) {
+      msg.password = " your password is incorrect !";
+    }
+    setValidationMsg(msg);
+    if (Object.keys(msg).length > 0) return false;
+    return true;
+  };
+  const onSubmitLogin = (event) => {
+    event.preventDefault();
+    const isValid = validateAll();
+    if (!isValid) return;
+  };
   return (
     <>
       <div>
@@ -42,8 +78,17 @@ function Loginpage() {
                                 className="form-control"
                                 placeholder="Email"
                                 name="email"
-                                required
+                                autoComplete="email"
+                                id="email"
+                                onChange={onChangeEmail}
                               />
+
+                              <i
+                                style={{ color: "red", fontSize: "10px" }}
+                                id="msg-error"
+                              >
+                                {validationMsg.email}
+                              </i>
                             </div>
                           </div>
                           <div className="col-lg-12">
@@ -53,10 +98,18 @@ function Loginpage() {
                               </label>
                               <input
                                 type="password"
+                                id="password"
                                 className="form-control"
                                 placeholder="Password"
-                                required
+                                autoComplete="current-password"
+                                onChange={onChangePassword}
                               />
+                              <i
+                                style={{ color: "red", fontSize: "10px" }}
+                                id="msg-error"
+                              >
+                                {validationMsg.password}
+                              </i>
                             </div>
                           </div>
                           <div className="col-lg-12">
@@ -85,7 +138,11 @@ function Loginpage() {
                             </div>
                           </div>
                           <div className="col-lg-12 mb-0">
-                            <button className="btn btn-primary w-100">
+                            <button
+                              type="submit"
+                              onClick={onSubmitLogin}
+                              className="btn btn-primary w-100"
+                            >
                               Sign in
                             </button>
                           </div>
