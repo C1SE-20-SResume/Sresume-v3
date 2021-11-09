@@ -73,10 +73,12 @@ function SignUpPage() {
         msg.confirmPassword = "error";
       }
     }
-    if (equals(password, confirmPassword)) {
-      msg.confirmPassword = "match!";
-    } else {
-      msg.confirmPassword = "not match";
+    // compare password and confirm password
+    if (isEmpty(confirmPassword)) {
+      msg.confirmPassword = "empty!";
+    }
+    if (!equals(password, confirmPassword)) {
+      msg.confirmPassword = "password is not match !";
     }
 
     setValidationMsg(msg);
@@ -86,6 +88,7 @@ function SignUpPage() {
   const Register = (e) => {
     e.preventDefault();
     const isValid = validateAll();
+
     if (!isValid) return;
     console.log(process.env.REACT_APP_API_URL);
     fetch(`${process.env.REACT_APP_API_URL}/register`, {
