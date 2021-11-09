@@ -9,9 +9,7 @@ function ListJobHome() {
   const [listUsers, setListUser] = useState([]);
 
   useEffect(() => {
-    fetch(
-      `${process.env.REACT_APP_API_URL}/candidate/job?api_token=${cookies.user}`
-    )
+    fetch(`${process.env.REACT_APP_API_URL}/job`)
       .then((res) => res.json())
       .then((data) => setListUser(data.data))
       .catch((err) => console.log(err));
@@ -126,6 +124,10 @@ function ListJobHome() {
                                     <div className="col-md-2">
                                       <div className="mo-mb-2">
                                         <img
+                                          style={
+                                            ({ width: "84px" },
+                                            { height: "84px" })
+                                          }
                                           src={item.logo_url}
                                           alt=""
                                           className="img-fluid mx-auto d-block"
@@ -164,12 +166,15 @@ function ListJobHome() {
                                     </div>
                                     <div className="col-md-2">
                                       <div>
-                                        <p className="text-muted mb-0">
+                                        <p
+                                          style={{ fontSize: "12px" }}
+                                          className="text-muted mb-0"
+                                        >
                                           <ion-icon
                                             id="calendar-icon"
                                             name="calendar-outline"
                                           ></ion-icon>
-                                          {/* {item.updated_at} */}
+                                          {item.updated_at}
                                         </p>
                                       </div>
                                     </div>

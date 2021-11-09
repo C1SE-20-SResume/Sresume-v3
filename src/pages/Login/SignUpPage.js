@@ -5,6 +5,9 @@ import isEmail from "validator/lib/isEmail";
 import isAlpha from "validator/lib/isAlpha";
 import isMobilePhone from "validator/lib/isMobilePhone";
 import isStrongPassword from "validator/lib/isStrongPassword";
+import equals from "validator/lib/equals";
+
+import { event } from "jquery";
 function SignUpPage() {
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -12,12 +15,13 @@ function SignUpPage() {
   const [birthday, setBirthday] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [gender, setGender] = useState("");
+
   const [validationMsg, setValidationMsg] = useState("");
   const onChangeFullName = (event) => {
     const value = event.target.value;
     setFullName(value);
   };
+
   const onChangeBirthday = (event) => {
     const value = event.target.value;
     setBirthday(value);
@@ -38,12 +42,17 @@ function SignUpPage() {
     const value = event.target.value;
     setConfirmPassword(value);
   };
+
   const validateAll = () => {
+    var regexp = new RegExp(/^[^\d+]*[\d+]{0}[^\d+]*$/);
+
     const msg = [];
     if (isEmpty(fullName)) {
-      msg.fullName = "please input your full name !";
-    } else if (!isAlpha(fullName)) {
-      msg.fullName = "full name contains only letters (a-zA-Z).";
+      msg.fullName = "please fill your full name !";
+    } else if (!regexp.test(fullName)) {
+      msg.fullName = "full name invalid !.";
+    } else if (!isNaN(fullName)) {
+      msg.fullName = "full name invalid !.";
     }
     if (isEmpty(phoneNumber)) {
       msg.phoneNumber = "please input your phone number !";
@@ -51,20 +60,33 @@ function SignUpPage() {
       msg.phoneNumber = "your phone number is incorrect !";
     }
     if (isEmpty(email)) {
-      msg.email = "please input your email  !";
+      msg.email = "please fill your email  !";
     } else if (!isEmail(email)) {
       msg.email = " your email is incorrect !";
     }
+    if (isEmpty(password)) {
+      msg.password = "empty!";
+    }
+    if (!isStrongPassword(password)) {
+      msg.password = "error";
+      if (!isStrongPassword(confirmPassword)) {
+        msg.confirmPassword = "error";
+      }
+    }
+    if (equals(password, confirmPassword)) {
+      msg.confirmPassword = "match!";
+    } else {
+      msg.confirmPassword = "not match";
+    }
+
     setValidationMsg(msg);
     if (Object.keys(msg).length > 0) return false;
     return true;
   };
   const Register = (e) => {
     e.preventDefault();
-
     const isValid = validateAll();
     if (!isValid) return;
-
     console.log(process.env.REACT_APP_API_URL);
     fetch(`${process.env.REACT_APP_API_URL}/register`, {
       method: "POST",
@@ -82,7 +104,7 @@ function SignUpPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.status === true) {
+        if (data.success === true) {
         }
       })
       .catch((err) => console.log(err));
@@ -250,6 +272,12 @@ function SignUpPage() {
                                 required
                                 onChange={onChangePassword}
                               />
+                              <i
+                                style={{ color: "red", fontSize: "10px" }}
+                                id="msg-error"
+                              >
+                                {validationMsg.password}
+                              </i>
                             </div>
                           </div>
 
@@ -266,6 +294,12 @@ function SignUpPage() {
                                 required
                                 onChange={onChangeconfirmPassword}
                               />
+                              <i
+                                style={{ color: "red", fontSize: "10px" }}
+                                id="msg-error"
+                              >
+                                {validationMsg.confirmPassword}
+                              </i>
                             </div>
                           </div>
                           <div className="col-md-12">

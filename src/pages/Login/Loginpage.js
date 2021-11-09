@@ -51,9 +51,9 @@ function Loginpage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.status === true) {
+        if (data.success === true) {
           setCookie("user", data.api_token);
-          console.log("check", data.api_token);
+          // console.log("check", data.api_token);
           window.location.reload();
         } else {
           setValidationMsg(data.message);
