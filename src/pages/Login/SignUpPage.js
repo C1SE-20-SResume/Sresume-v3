@@ -9,45 +9,62 @@ function SignUpPage() {
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [gender, setGender] = useState("");
   const [validationMsg, setValidationMsg] = useState("");
-
-  const handleSubmit = (e) => {
+  const onChangeFullName = (event) => {
+    const value = event.target.value;
+    setFullName(value);
+  };
+  const onChangeBirthday = (event) => {
+    const value = event.target.value;
+    setBirthday(value);
+  };
+  const onChangePhoneNumber = (event) => {
+    const value = event.target.value;
+    setPhoneNumber(value);
+  };
+  const onChangeEmail = (event) => {
+    const value = event.target.value;
+    setEmail(value);
+  };
+  const onChangePassword = (event) => {
+    const value = event.target.value;
+    setPassword(value);
+  };
+  const onChangeconfirmPassword = (event) => {
+    const value = event.target.value;
+    setConfirmPassword(value);
+  };
+  const validateAll = () => {
+    const msg = [];
+    if (isEmpty(fullName)) {
+      msg.fullName = "please input your full name !";
+    } else if (!isAlpha(fullName)) {
+      msg.fullName = "full name contains only letters (a-zA-Z).";
+    }
+    if (isEmpty(phoneNumber)) {
+      msg.phoneNumber = "please input your phone number !";
+    } else if (!isMobilePhone(phoneNumber, "vi-VN")) {
+      msg.phoneNumber = "your phone number is incorrect !";
+    }
+    if (isEmpty(email)) {
+      msg.email = "please input your email  !";
+    } else if (!isEmail(email)) {
+      msg.email = " your email is incorrect !";
+    }
+    setValidationMsg(msg);
+    if (Object.keys(msg).length > 0) return false;
+    return true;
+  };
+  const Register = (e) => {
     e.preventDefault();
-
-    // console.info(e.target);
-
-    setFullName(e.target.fullName.value);
-    setPhoneNumber(e.target.phoneNumber.value);
-    setEmail(e.target.email.value);
-    setPassword(e.target.password.value);
-    // setConfirmPassword(e.target.confirmPassword.value);
-
-    const validateAll = () => {
-      const msg = [];
-      if (isEmpty(fullName)) {
-        msg.fullName = "please input your full name !";
-      } else if (!isAlpha(fullName)) {
-        msg.fullName = "full name contains only letters (a-zA-Z).";
-      }
-      if (isEmpty(phoneNumber)) {
-        msg.phoneNumber = "please input your phone number !";
-      } else if (!isMobilePhone(phoneNumber, "vi-VN")) {
-        msg.phoneNumber = "your phone number is incorrect !";
-      }
-      if (isEmpty(email)) {
-        msg.email = "please input your email  !";
-      } else if (!isEmail(email)) {
-        msg.email = " your email is incorrect !";
-      }
-      setValidationMsg(msg);
-      if (Object.keys(msg).length > 0) return false;
-      return true;
-    };
 
     const isValid = validateAll();
     if (!isValid) return;
+
     console.log(process.env.REACT_APP_API_URL);
     fetch(`${process.env.REACT_APP_API_URL}/register`, {
       method: "POST",
@@ -58,6 +75,7 @@ function SignUpPage() {
         full_name: fullName,
         phone_number: phoneNumber,
         email: email,
+        date_birth: birthday,
         password: password,
         gender: "f",
       }),
@@ -96,7 +114,7 @@ function SignUpPage() {
                       <div className="text-center">
                         <h4 className="mb-4">Signup</h4>
                       </div>
-                      <form className="login-form" onSubmit={handleSubmit}>
+                      <form className="login-form" onSubmit={Register}>
                         <div className="row">
                           <div className="col-md-6">
                             <div className="form-group position-relative">
@@ -109,6 +127,7 @@ function SignUpPage() {
                                 placeholder="your fullname ?"
                                 name="fullName"
                                 required
+                                onChange={onChangeFullName}
                               />
                               <i
                                 style={{ color: "red", fontSize: "10px" }}
@@ -130,6 +149,7 @@ function SignUpPage() {
                                 placeholder="your phone number"
                                 name="phoneNumber"
                                 required
+                                onChange={onChangePhoneNumber}
                               />
                               <i
                                 style={{ color: "red", fontSize: "10px" }}
@@ -151,6 +171,29 @@ function SignUpPage() {
                                 placeholder="Email"
                                 name="email"
                                 required
+                                onChange={onChangeEmail}
+                              />
+                              <i
+                                style={{ color: "red", fontSize: "10px" }}
+                                id="msg-error"
+                              >
+                                {validationMsg.email}
+                              </i>
+                            </div>
+                          </div>
+                          <div className="col-md-12">
+                            <div className="form-group position-relative">
+                              <label>
+                                BirthDay
+                                <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                type="date"
+                                className="form-control"
+                                id="birthday"
+                                name="birthday"
+                                required
+                                onChange={onChangeBirthday}
                               />
                               <i
                                 style={{ color: "red", fontSize: "10px" }}
@@ -205,6 +248,7 @@ function SignUpPage() {
                                 placeholder="Password"
                                 name="password"
                                 required
+                                onChange={onChangePassword}
                               />
                             </div>
                           </div>
@@ -220,6 +264,7 @@ function SignUpPage() {
                                 className="form-control"
                                 placeholder="Confirm Password"
                                 required
+                                onChange={onChangeconfirmPassword}
                               />
                             </div>
                           </div>
@@ -247,6 +292,7 @@ function SignUpPage() {
                             <button
                               type="submit"
                               className="btn btn-primary w-100"
+                              onclick={Register}
                             >
                               Register
                             </button>

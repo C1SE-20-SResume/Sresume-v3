@@ -8,10 +8,17 @@ import { useCookies } from "react-cookie";
 function Loginpage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cookies, setCookie] = useCookies(["user"]);
   const [validationMsg, setValidationMsg] = useState("");
 
-  const [cookies, setCookie] = useCookies(["user"]);
-
+  const onChangeEmail = (event) => {
+    const value = event.target.value;
+    setEmail(value);
+  };
+  const onChangePassword = (event) => {
+    const value = event.target.value;
+    setPassword(value);
+  };
   const validateAll = () => {
     const msg = {};
     if (isEmpty(email)) {
@@ -20,9 +27,9 @@ function Loginpage() {
       msg.email = " your email is incorrect !";
     }
     if (isEmpty(password)) {
-      msg.password = "please input your password ";
+      msg.password = "plase input your password ";
     } else if (!isStrongPassword(password)) {
-      msg.password = "Your password is incorrect !";
+      msg.password = " your password is incorrect !";
     }
     setValidationMsg(msg);
     if (Object.keys(msg).length > 0) return false;
@@ -46,6 +53,7 @@ function Loginpage() {
       .then((data) => {
         if (data.status === true) {
           setCookie("user", data.api_token);
+          console.log("check", data.api_token);
           window.location.reload();
         } else {
           setValidationMsg(data.message);
@@ -80,7 +88,7 @@ function Loginpage() {
                       <div className="text-center">
                         <h4 className="mb-4">Login</h4>
                       </div>
-                      <form className="login-form">
+                      <form className="login-form" onSubmit={onSubmitLogin}>
                         <div className="row">
                           <div className="col-lg-12">
                             <div className="form-group position-relative">
@@ -95,9 +103,8 @@ function Loginpage() {
                                 name="email"
                                 autoComplete="email"
                                 id="email"
-                                onChange={(event) =>
-                                  setEmail(event.target.value)
-                                }
+                                required
+                                onChange={onChangeEmail}
                               />
 
                               <i
@@ -119,9 +126,7 @@ function Loginpage() {
                                 className="form-control"
                                 placeholder="Password"
                                 autoComplete="current-password"
-                                onChange={(event) =>
-                                  setPassword(event.target.value)
-                                }
+                                onChange={onChangePassword}
                               />
                               <i
                                 style={{ color: "red", fontSize: "10px" }}
@@ -159,7 +164,6 @@ function Loginpage() {
                           <div className="col-lg-12 mb-0">
                             <button
                               type="submit"
-                              onClick={onSubmitLogin}
                               className="btn btn-primary w-100"
                             >
                               Sign in
