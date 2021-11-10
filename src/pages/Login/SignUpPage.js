@@ -6,6 +6,9 @@ import isAlpha from "validator/lib/isAlpha";
 import isMobilePhone from "validator/lib/isMobilePhone";
 import isStrongPassword from "validator/lib/isStrongPassword";
 import equals from "validator/lib/equals";
+import isDate from "validator/lib/isDate";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { event } from "jquery";
 function SignUpPage() {
@@ -55,9 +58,14 @@ function SignUpPage() {
       msg.fullName = "full name invalid !.";
     }
     if (isEmpty(phoneNumber)) {
-      msg.phoneNumber = "please input your phone number !";
+      msg.phoneNumber = "please fill your phone number !";
     } else if (!isMobilePhone(phoneNumber, "vi-VN")) {
       msg.phoneNumber = "your phone number is incorrect !";
+    }
+    if (isEmpty(birthday)) {
+      msg.birthday = "please fill your birthday";
+    } else if (!isDate(birthday, ["DD/MM/YYYY"])) {
+      msg.birthday = "format birthday is incorrect {dd/mm/yyyy}";
     }
     if (isEmpty(email)) {
       msg.email = "please fill your email  !";
@@ -108,6 +116,10 @@ function SignUpPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success === true) {
+          toast.success(data.message);
+          console.log("check:", data);
+        } else {
+          toast.error(data.message);
         }
       })
       .catch((err) => console.log(err));
@@ -127,7 +139,7 @@ function SignUpPage() {
         <section
           style={{
             background:
-              'url("https://via.placeholder.com/2000X1333//88929f/5a6270C/O https://placeholder.com/") center center',
+              'url("https://images.unsplash.com/photo-1510915228340-29c85a43dcfe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80") center center',
           }}
         >
           <div className="home-center">
@@ -224,7 +236,7 @@ function SignUpPage() {
                                 style={{ color: "red", fontSize: "10px" }}
                                 id="msg-error"
                               >
-                                {validationMsg.email}
+                                {validationMsg.birthday}
                               </i>
                             </div>
                           </div>

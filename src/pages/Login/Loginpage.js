@@ -4,6 +4,8 @@ import isEmpty from "validator/lib/isEmpty";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
 import { useCookies } from "react-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Loginpage() {
   const [email, setEmail] = useState("");
@@ -53,10 +55,11 @@ function Loginpage() {
       .then((data) => {
         if (data.success === true) {
           setCookie("user", data.api_token);
-          // console.log("check", data.api_token);
-          window.location.reload();
+          console.log("check", data);
+          // window.location.reload();
         } else {
-          setValidationMsg(data.message);
+          // setValidationMsg(data.message);
+          toast.error(data.message);
         }
       })
       .catch((err) => console.log(err));
@@ -74,10 +77,14 @@ function Loginpage() {
         </div>
         <section
           className="vh-100"
-          style={{
-            background:
-              'url("https://via.placeholder.com/2000X1333//88929f/5a6270C/O https://placeholder.com/") center center',
-          }}
+          style={
+            ({ backgroundRepeat: "no-repeat" },
+            { backgroundSize: "cover" },
+            {
+              background:
+                'url("https://images.unsplash.com/photo-1534665482403-a909d0d97c67?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80") center center',
+            })
+          }
         >
           <div className="home-center">
             <div className="home-desc-center">

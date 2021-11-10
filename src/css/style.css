@@ -24,6 +24,9 @@ File: main stylesheet
 .bg-primary {
   background-color: #2f55d4 !important;
 }
+.vh-100{
+  background-repeat: no-repeat;
+}
 
 .bg-secondary {
   background-color: #5a6d90 !important;

@@ -1,6 +1,8 @@
 import "./App.css";
 import LayoutHomeMain from "./routes/LayoutHomeMain";
 import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,21 +14,20 @@ import LayoutHeader from "./routes/HeaderLayout/LayoutHeader";
 import Listjob from "./pages/Job/Listjob";
 import Footer from "./auth/Footer";
 import Loginpage from "./pages/Login/Loginpage";
-import Loader from "./pages/home/Loader";
+
 import SignUpPage from "./pages/Login/SignUpPage";
 import Jobdetail from "./pages/Job/Jobdetail";
 
 import { useCookies } from "react-cookie";
+import ReactToastify from "./pages/Toast/ReactToastify";
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   return (
     <>
       <Router>
-        <Loader />
-
         <Switch>
-          {cookies.user ?? (
+          {cookies.userr ?? (
             <Route path={["/login", "/SignUp"]}>
               <Switch>
                 <Route path="/login">
@@ -60,6 +61,7 @@ function App() {
             <Footer />
           </Route>
         </Switch>
+        <ReactToastify />
       </Router>
     </>
   );
