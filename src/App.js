@@ -27,7 +27,7 @@ function App() {
     <>
       <Router>
         <Switch>
-          {cookies.userr ?? (
+          {cookies.user ?? (
             <Route path={["/login", "/SignUp"]}>
               <Switch>
                 <Route path="/login">
@@ -50,7 +50,7 @@ function App() {
               <Route path="/Job">
                 <Listjob />
               </Route>
-              <Route path="/jobdetail">
+              <Route path="/job-detail/:job_id">
                 <Jobdetail />
               </Route>
               <Route path="*">

@@ -1,3 +1,4 @@
+import { data } from "jquery";
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router-dom";
@@ -11,9 +12,13 @@ function ListJobHome() {
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/job`)
       .then((res) => res.json())
-      .then((data) => setListUser(data.data))
+      .then((data) => {
+        setListUser(data.data);
+        console.log("check>>", data.data);
+      })
       .catch((err) => console.log(err));
   }, []);
+
   return (
     <>
       <section className="section bg-light">
@@ -107,7 +112,7 @@ function ListJobHome() {
                         listUsers.map((item, index) => {
                           return (
                             <Link
-                              to={`/job-detail/${item.id}`}
+                              to={`/job-detail/${item.job_id}`}
                               className="col-span-1"
                               key={index}
                             >

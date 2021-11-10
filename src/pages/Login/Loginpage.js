@@ -56,7 +56,7 @@ function Loginpage() {
         if (data.success === true) {
           setCookie("user", data.api_token);
           console.log("check", data);
-          // window.location.reload();
+          window.location.reload();
         } else {
           // setValidationMsg(data.message);
           toast.error(data.message);
